@@ -1,0 +1,25 @@
+{
+  "name": "com-ssi-plugin-NetCoreIOS",
+  "version": "0.0.1",
+  "description": "Smartech plugin for Cordova iOS Application",
+  "cordova": {
+    "id": "com-ssi-plugin-NetCoreIOS",
+    "platforms": [
+      "ios"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kjhaSSI/SmartechiOSCordova.git"
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-ios"
+  ],
+  "author": "Kamalkumar Jha",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kjhaSSI/SmartechiOSCordova/issues"
+  },
+  "homepage": "https://github.com/kjhaSSI/SmartechiOSCordova#readme"
+}
