@@ -11,6 +11,6 @@
             </feature>
         </config-file>
         <header-file src="src/ios/NCAppManager.h" />
-        <source-file src="src/ios/NCAppManagere.m" />
+        <source-file src="src/ios/NCAppManager.m" />
     </platform>
 </plugin>
