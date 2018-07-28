@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="com-ssi-plugin-NetCoreIOS" version="0.0.1" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>NetCoreIOSCordovaSDK</name>
+    <js-module name="NetCoreIOSCordovaSDK" src="www/NetCoreIOSCordovaSDK.js">
+        <clobbers target="smartech" />
+    </js-module>
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="Smartech">
+                <param name="ios-package" value="NCAppManager"/>
+            </feature>
+        </config-file>
+        <header-file src="src/ios/NCAppManager.h" />
+        <source-file src="src/ios/NCAppManagere.m" />
+    </platform>
+</plugin>
