@@ -5,16 +5,14 @@
     </engines>
     <name>NetCoreIOSCordovaSDK</name>
     <asset src="www/NetCoreIOSCordovaSDK.js" target="js/NetCoreIOSCordovaSDK.js"/>
-    
+    <js-module name="NetCoreIOSCordovaSDK" src="www/NetCoreIOSCordovaSDK.js">
+        <clobbers target="smartech" />
+    </js-module>
     <platform name="ios">
-        <js-module name="NetCoreIOSCordovaSDK" src="www/NetCoreIOSCordovaSDK.js">
-            <clobbers target="smartech" />
-        </js-module>
         <config-file target="config.xml" parent="/*">
-            <feature name="Smartech">
+            <feature name="NetCoreIOSCordovaSDK">
                 <param name="ios-package" value="NetCoreIOSCordovaSDK"/>
             </feature>
-            <plugin name="NetCoreIOSCordovaSDK" value="NetCoreIOSCordovaSDK"/>
         </config-file>
         <header-file src="src/ios/NetCoreIOSCordovaSDK.h" />
         <source-file src="src/ios/NetCoreIOSCordovaSDK.m" />
