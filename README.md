@@ -31,23 +31,23 @@ App Groups
 ```
 ## NetCore SDK Initialization
 Add header in AppDelegate.h
-```
+```objectivec
 #import <UserNotifications/UserNotifications.h>
 #import <UserNotificationsUI/UserNotificationsUI.h>
 #import "NetCoreIOSCordovaSDK.h"
 ```
 
 Add Delegate in AppDelegate.h
-```
+```objectivec
 UNUserNotificationCenterDelegate
 ```
 Open AppDelegate.m
 Add following code in didFinishLaunchingWithOptions:
-```
+```objectivec
 [[NetCoreIOSCordovaSDK sharedInstance] setAppLaunchOptions:launchOptions];
 ``` 
 Add below code in AppDelegate.m
-```
+```objectivec
 -(void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken {
 
 [[NetCoreIOSCordovaSDK sharedInstance] setNotificationDeviceToken:deviceToken];
