@@ -6,14 +6,14 @@
 //  Copyright © 2018 Kamalkumar Jha. All rights reserved.
 //
 
-#import "NCAppManager.h"
+#import "NetCoreIOSCordovaSDK.h"
 #import <NetCorePush/NetCorePush.h>
 
 #define SYSTEM_VERSION_GRATERTHAN_OR_EQUALTO(v)  ([[[UIDevice currentDevice] systemVersion] compare:v options:NSNumericSearch] != NSOrderedAscending)
 
-NCAppManager *manager = nil;
+NetCoreIOSCordovaSDK *manager = nil;
 
-@interface NCAppManager()<NetCorePushTaskManagerDelegate, UNUserNotificationCenterDelegate>
+@interface NetCoreIOSCordovaSDK()<NetCorePushTaskManagerDelegate, UNUserNotificationCenterDelegate>
 
 @property (nonatomic, strong) NSDictionary *launchOptions;
 @property (nonatomic, strong) NSString *deviceToken;
@@ -23,16 +23,16 @@ NCAppManager *manager = nil;
 
 @end
 
-@implementation NCAppManager
+@implementation NetCoreIOSCordovaSDK
 @synthesize launchOptions;
 @synthesize deviceToken;
 @synthesize applicationId;
 @synthesize identity;
 @synthesize group;
 
-+(NCAppManager *)sharedInstance {
++(NetCoreIOSCordovaSDK *)sharedInstance {
     if (manager == nil) {
-        manager = [[NCAppManager alloc] init];
+        manager = [[NetCoreIOSCordovaSDK alloc] init];
     }
     
     return manager;

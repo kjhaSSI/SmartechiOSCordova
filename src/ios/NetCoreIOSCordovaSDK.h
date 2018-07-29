@@ -13,9 +13,9 @@
 #import <UserNotifications/UserNotifications.h>
 #import <UserNotificationsUI/UserNotificationsUI.h>
 
-@interface NCAppManager : CDVPlugin
+@interface NetCoreIOSCordovaSDK : CDVPlugin
 
-+(NCAppManager *)sharedInstance;
++(NetCoreIOSCordovaSDK *)sharedInstance;
 
 -(void)setAppLaunchOptions:(NSDictionary *)launchOptions;
 -(void)setNotificationDeviceToken:(NSData *)token;
