@@ -12,5 +12,7 @@
         </config-file>
         <header-file src="src/ios/NCAppManager.h" />
         <source-file src="src/ios/NCAppManager.m" />
+        <pods-config ios-min-version="9.0" use-frameworks="true" />
+        <pod name="Netcore-Smartech-iOS-SDK" />
     </platform>
 </plugin>
