@@ -76,9 +76,10 @@ Edit `www/js/index.js` and add the following code inside `onDeviceReady` functio
 
 ```js
 var data = {};
-data["eventId"] = "25";            // To get token from FCM
+data["eventId"] = "25";
 data["identity"] = "<Login identity>";    // provide “” or primary key defined on smartech panel
 data["applicationId"] = "<ApplicationId>";    // provide AppId which you get from Smartech panel
+data["group"] = "<App Groupp>"
 smartech.track(data);
 ```
 
