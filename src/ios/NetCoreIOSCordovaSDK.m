@@ -1,4 +1,4 @@
-//
+
 //  NCAppManager.m
 //  NetCoreiOSPlugin
 //
@@ -54,24 +54,29 @@ NetCoreIOSCordovaSDK *manager = nil;
 }
 
 -(void)registerDevice {
-    [[NetCoreSharedManager sharedInstance] setUpAppGroup:self.group];
-    [[NetCoreSharedManager sharedInstance] handleApplicationLaunchEvent:self.launchOptions forApplicationId:self.applicationId];
-    [[NetCorePushTaskManager sharedInstance] setDelegate:self];
+    dispatch_async(dispatch_get_main_queue(), ^(){
+        [[NetCoreSharedManager sharedInstance] setUpAppGroup:self.group];
+        [[NetCoreSharedManager sharedInstance] handleApplicationLaunchEvent:self.launchOptions forApplicationId:self.applicationId];
+        [[NetCorePushTaskManager sharedInstance] setDelegate:self];
+        
+        if(SYSTEM_VERSION_GRATERTHAN_OR_EQUALTO(@"10.0")){
+            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
+            center.delegate = self;
+            [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error){
+                if(!error){
+                    dispatch_async(dispatch_get_main_queue(), ^(){
+                        [[UIApplication sharedApplication] registerForRemoteNotifications];
+                    });
+                }
+            }];
+        }
+        else {
+            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
+            [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
+            [[UIApplication sharedApplication] registerForRemoteNotifications];
+        }
+    });
     
-    if(SYSTEM_VERSION_GRATERTHAN_OR_EQUALTO(@"10.0")){
-        UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-        center.delegate = self;
-        [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error){
-            if(!error){
-                [[UIApplication sharedApplication] registerForRemoteNotifications];
-            }
-        }];
-    }
-    else {
-        UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
-        [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-        [[UIApplication sharedApplication] registerForRemoteNotifications];
-    }
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
@@ -86,7 +91,7 @@ NetCoreIOSCordovaSDK *manager = nil;
 #pragma mark - Cordova Triggered Functions
 -(void)track:(CDVInvokedUrlCommand*)command {
     NSDictionary *trackableData = [[command arguments] objectAtIndex:0];
-    int eventId = (int)trackableData[@"eventId"];
+    int eventId = [trackableData[@"eventId"] intValue];
     
     if (eventId == 0) {
         [self updateProfile:trackableData[@"profile"] forIdentity:trackableData[@"identity"]];

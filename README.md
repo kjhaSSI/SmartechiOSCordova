@@ -79,7 +79,7 @@ var data = {};
 data["eventId"] = "25";
 data["identity"] = "<Login identity>";    // provide “” or primary key defined on smartech panel
 data["applicationId"] = "<ApplicationId>";    // provide AppId which you get from Smartech panel
-data["group"] = "<App Groupp>"
+data["group"] = "<App Group>"
 smartech.track(data);
 ```
 
