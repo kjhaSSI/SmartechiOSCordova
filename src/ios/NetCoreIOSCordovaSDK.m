@@ -43,40 +43,15 @@ NetCoreIOSCordovaSDK *manager = nil;
 }
 
 -(void)setNotificationDeviceToken:(NSData *)token {
-    NSString * deviceTokenString = [[[[token description]
-                                      stringByReplacingOccurrencesOfString: @"<" withString: @""]
-                                     stringByReplacingOccurrencesOfString: @">" withString: @""]
-                                    stringByReplacingOccurrencesOfString: @" " withString: @""];
-    self.deviceToken = deviceTokenString;
-    [[NetCoreInstallation sharedInstance] netCorePushRegisteration:self.deviceToken Block:^(NSInteger statusCode) {
+    [[NetCoreInstallation sharedInstance] netCorePushRegisteration:self.identity withDeviceToken:token Block:^(NSInteger statusCode) {
         NSLog(@"Registration Status: %d",(int)statusCode);
     }];
 }
 
 -(void)registerDevice {
-    dispatch_async(dispatch_get_main_queue(), ^(){
-        [[NetCoreSharedManager sharedInstance] setUpAppGroup:self.group];
-        [[NetCoreSharedManager sharedInstance] handleApplicationLaunchEvent:self.launchOptions forApplicationId:self.applicationId];
-        [[NetCorePushTaskManager sharedInstance] setDelegate:self];
-        
-        if(SYSTEM_VERSION_GRATERTHAN_OR_EQUALTO(@"10.0")){
-            UNUserNotificationCenter *center = [UNUserNotificationCenter currentNotificationCenter];
-            center.delegate = self;
-            [center requestAuthorizationWithOptions:(UNAuthorizationOptionSound | UNAuthorizationOptionAlert | UNAuthorizationOptionBadge) completionHandler:^(BOOL granted, NSError * _Nullable error){
-                if(!error){
-                    dispatch_async(dispatch_get_main_queue(), ^(){
-                        [[UIApplication sharedApplication] registerForRemoteNotifications];
-                    });
-                }
-            }];
-        }
-        else {
-            UIUserNotificationSettings *settings = [UIUserNotificationSettings settingsForTypes:UIUserNotificationTypeAlert | UIUserNotificationTypeBadge | UIUserNotificationTypeSound categories:nil];
-            [[UIApplication sharedApplication] registerUserNotificationSettings:settings];
-            [[UIApplication sharedApplication] registerForRemoteNotifications];
-        }
-    });
-    
+    [[NetCoreSharedManager sharedInstance] setUpAppGroup:self.group];
+    [[NetCoreSharedManager sharedInstance] handleApplicationLaunchEvent:self.launchOptions forApplicationId:self.applicationId];
+    [[NetCorePushTaskManager sharedInstance] setDelegate:self];
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
@@ -94,15 +69,15 @@ NetCoreIOSCordovaSDK *manager = nil;
     int eventId = [trackableData[@"eventId"] intValue];
     
     if (eventId == 0) {
-        [self updateProfile:trackableData[@"profile"] forIdentity:trackableData[@"identity"]];
+        [[NetCoreIOSCordovaSDK sharedInstance] updateProfile:trackableData[@"profile"] forIdentity:trackableData[@"identity"]];
     } else if (eventId == 22) {
-        [self login:trackableData[@"identity"]];
+        [[NetCoreIOSCordovaSDK sharedInstance] login:trackableData[@"identity"]];
     } else if (eventId == 23) {
-        [self logout:trackableData[@"identity"]];
+        [[NetCoreIOSCordovaSDK sharedInstance] logout:trackableData[@"identity"]];
     } else  if (eventId == 25) {
-        [self registerAppWithID:trackableData[@"applicationId"] Identity:trackableData[@"identity"] Group:trackableData[@"group"]];
+        [[NetCoreIOSCordovaSDK sharedInstance] registerAppWithID:trackableData[@"applicationId"] Identity:trackableData[@"identity"] Group:trackableData[@"group"]];
     } else  {
-        [self trackCustomEvent:eventId payload:trackableData[@"payload"]];
+        [[NetCoreIOSCordovaSDK sharedInstance] trackCustomEvent:eventId payload:trackableData[@"payload"]];
     }
     
     NSString *trackingMessage = [NSString stringWithFormat:@"Tracking Done For %d", eventId];

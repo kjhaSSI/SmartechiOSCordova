@@ -102,3 +102,5 @@ For profile update, login and logout, eventId must be 0, 22 and 23 respectively
 **For profile :** pass profile details in data with key “profile” if profile build event called
 **Format of profile :**  profile must be in below format as a Json object with key must be in Capital.
 {“NAME":"SSI","MOBILE":9768362862,"CITY":"Mumbai","AGE":28}
+------
+**App can be tested for push notifications only with the help of Distribution APN profile.**
