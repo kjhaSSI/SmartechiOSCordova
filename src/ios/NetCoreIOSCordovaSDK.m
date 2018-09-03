@@ -16,7 +16,7 @@ NetCoreIOSCordovaSDK *manager = nil;
 @interface NetCoreIOSCordovaSDK()<NetCorePushTaskManagerDelegate, UNUserNotificationCenterDelegate>
 
 @property (nonatomic, strong) NSDictionary *launchOptions;
-@property (nonatomic, strong) NSString *deviceToken;
+@property (nonatomic, strong) NSData *deviceToken;
 @property (nonatomic, strong) NSString *applicationId;
 @property (nonatomic, strong) NSString *identity;
 @property (nonatomic, strong) NSString *group;
@@ -43,15 +43,26 @@ NetCoreIOSCordovaSDK *manager = nil;
 }
 
 -(void)setNotificationDeviceToken:(NSData *)token {
+    self.deviceToken = token;
     [[NetCoreInstallation sharedInstance] netCorePushRegisteration:self.identity withDeviceToken:token Block:^(NSInteger statusCode) {
         NSLog(@"Registration Status: %d",(int)statusCode);
     }];
 }
 
 -(void)registerDevice {
-    [[NetCoreSharedManager sharedInstance] setUpAppGroup:self.group];
-    [[NetCoreSharedManager sharedInstance] handleApplicationLaunchEvent:self.launchOptions forApplicationId:self.applicationId];
+    if (self.applicationId != nil) {
+        [[NetCoreSharedManager sharedInstance] setUpAppGroup:self.group];
+        [[NetCoreSharedManager sharedInstance] handleApplicationLaunchEvent:self.launchOptions forApplicationId:self.applicationId];
+    }
+    
+    if (self.deviceToken != nil) {
+        [[NetCoreInstallation sharedInstance] netCorePushRegisteration:self.identity withDeviceToken:self.deviceToken Block:^(NSInteger statusCode) {
+            NSLog(@"Registration Status: %d",(int)statusCode);
+        }];
+    }
+    
     [[NetCorePushTaskManager sharedInstance] setDelegate:self];
+    
 }
 
 - (void)userNotificationCenter:(UNUserNotificationCenter *)center didReceiveNotificationResponse:(UNNotificationResponse *)response withCompletionHandler:(void(^)(void))completionHandler {
@@ -59,7 +70,8 @@ NetCoreIOSCordovaSDK *manager = nil;
 }
 
 -(void)handleNotificationOpenAction:(NSDictionary *)userInfo DeepLinkType:(NSString *)strType {
-    //TODO: Need to add code here
+    NSDictionary *myInfo = @{@"strType":strType, @"userInfo":userInfo};
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"handleNotificationOpenAction" object:nil userInfo:myInfo];
 }
 
 #pragma mark - Cordova Triggered Functions
@@ -98,6 +110,11 @@ NetCoreIOSCordovaSDK *manager = nil;
 
 -(void)login:(NSString *)identity {
     [[NetCoreInstallation sharedInstance] netCorePushLogin:identity Block:nil];
+    if (self.deviceToken != nil) {
+        [[NetCoreInstallation sharedInstance] netCorePushRegisteration:self.identity withDeviceToken:self.deviceToken Block:^(NSInteger statusCode) {
+            NSLog(@"Registration Status: %d",(int)statusCode);
+        }];
+    }
 }
 
 -(void)logout:(NSString *)identity {
